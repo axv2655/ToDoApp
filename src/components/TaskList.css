@@ -23,7 +23,8 @@ li {
   text-decoration: none;
   border-bottom: .1rem solid #000000;
   border-top: .1rem solid #000000;
-  border-radius: 2px;
+  /* border: .1rem solid #000000; */
+  border-radius: 3px;
   margin: .3rem;
   padding: .2rem .2rem .2rem .5rem;
   display: flex;

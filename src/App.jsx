@@ -2,15 +2,15 @@ import TaskBar from "./components/TaskBar";
 import "./App.css";
 import TaskList from "./components/TaskList";
 import OffCanvas from "./components/OffCanvas";
-import { ProjectProvider } from "./components/useProject";
+import { BaseContextProvider } from "./context/baseContent";
 function App() {
   return (
     <div>
-      <ProjectProvider>
+      <BaseContextProvider>
         <OffCanvas />
         <TaskBar />
         <TaskList />
-      </ProjectProvider>
+      </BaseContextProvider>
     </div>
   );
 }

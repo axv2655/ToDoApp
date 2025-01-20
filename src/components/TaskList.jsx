@@ -1,23 +1,23 @@
+import { CreateTaskModal } from "./CreateModal";
 import "./TaskList.css";
 import React, { useState, useRef } from "react";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import TaskData from "../data/taskdata.json";
 import ProjectData from "../data/projectdata.json";
-import Dropdown from "react-bootstrap/Dropdown";
-import { useProject } from "./useProject";
+import { useBaseContext } from "../context/baseContent";
+import Button from "react-bootstrap/Button";
 
 function TaskList() {
   const [show, setShow] = useState(false);
   const [tasks, setTasks] = useState(
     TaskData.map((task) => ({
       ...task,
-      date: new Date(task.date), // Convert string date to Date object
+      date: new Date(task.date), // convert string date to date object
     }))
   );
   const [projects] = useState(ProjectData);
   const [selectedProject, setSelectedProject] = useState(undefined); // used for adding tasks modal
-  const { selectedProjectInfo } = useProject(); // used for tasks of project
+  const { selectedProjectInfo, setModalType, setDropdownType } =
+    useBaseContext(); // used for tasks of project
 
   const taskValue = useRef(null);
   const taskDate = useRef(null);
@@ -28,7 +28,6 @@ function TaskList() {
   const handleCloseSave = () => {
     if (taskValue.current && taskDate.current && selectedProject) {
       const dates = new Date(taskDate.current.value);
-      console.log(dates);
 
       setTasks((prevTasks) => [
         ...prevTasks,
@@ -40,7 +39,6 @@ function TaskList() {
           projectid: selectedProject.id,
         },
       ]);
-
       setSelectedProject(undefined);
       setShow(false);
     }
@@ -59,8 +57,6 @@ function TaskList() {
           .sort((a, b) => {
             const dateA = a.date;
             const dateB = b.date;
-            console.log(dateA, dateB);
-            console.log(dateA.getTime() - dateB.getTime());
             return dateA.getTime() - dateB.getTime();
           })
           .map((task) => {
@@ -104,47 +100,25 @@ function TaskList() {
           })}
       </ul>
       <div className="add-task">
-        <Button variant="primary" onClick={handleShow}>
+        <Button
+          variant="primary"
+          onClick={() => {
+            handleShow();
+            setModalType("task");
+          }}
+        >
           Add Task
         </Button>
-
-        <Modal show={show} backdrop={true} onHide={handleClose}>
-          <Modal.Header closeButton>
-            <Modal.Title>Add Task</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            <input type="text" placeholder="Task Name" ref={taskValue} />
-            <input type="datetime-local" ref={taskDate} />
-            <Dropdown>
-              <Dropdown.Toggle variant="success" id="dropdown-basic">
-                {selectedProject ? selectedProject.name : "Select Project"}
-              </Dropdown.Toggle>
-
-              <Dropdown.Menu>
-                {projects.map((project) => (
-                  <Dropdown.Item
-                    key={project.id}
-                    onClick={() => setSelectedProject(project)}
-                  >
-                    {project.name}
-                  </Dropdown.Item>
-                ))}
-              </Dropdown.Menu>
-            </Dropdown>
-          </Modal.Body>
-          <Modal.Footer>
-            <Button variant="secondary" onClick={handleClose}>
-              Close
-            </Button>
-            <Button
-              variant="primary"
-              onClick={handleCloseSave}
-              disabled={!selectedProject}
-            >
-              Add Task
-            </Button>
-          </Modal.Footer>
-        </Modal>
+        <CreateTaskModal
+          show={show}
+          handleClose={handleClose}
+          taskValue={taskValue}
+          taskDate={taskDate}
+          selectedProject={selectedProject}
+          projects={projects}
+          setSelectedProject={setSelectedProject}
+          handleCloseSave={handleCloseSave}
+        />
       </div>
     </div>
   );

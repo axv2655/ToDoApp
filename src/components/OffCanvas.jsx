@@ -1,12 +1,13 @@
 import { useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
+import { CreateTaskModal } from "./CreateModal";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import "./OffCanvas.css";
 import Modal from "react-bootstrap/Modal";
 import ProjectData from "../data/projectdata.json";
-import { useProject } from "./useProject";
+import { useBaseContext } from "../context/baseContent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faPlus, faHouse } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
 function OffCanvas() {
@@ -19,6 +20,7 @@ function OffCanvas() {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
+  const { setSelectedProjectInfo, setModalType } = useBaseContext();
 
   const handleCloseSave = () => {
     if (!taskValue.current || taskValue.current.value.trim() === "") {
@@ -40,15 +42,23 @@ function OffCanvas() {
   };
 
   const taskValue = useRef(null);
-  const { setSelectedProjectInfo } = useProject();
 
   return (
     <>
       <div className="project-button">
         <FontAwesomeIcon
           icon={faBars}
-          onClick={handleShowCanvas}
+          onClick={() => {
+            handleShowCanvas();
+          }}
           style={{ color: "black", fontSize: "24px" }}
+        />
+        <FontAwesomeIcon
+          icon={faHouse}
+          onClick={() => {
+            setSelectedProjectInfo(null);
+          }}
+          id="home-icon"
         />
       </div>
       <Offcanvas show={showCanvas} onHide={handleCloseCanvas}>
@@ -58,38 +68,36 @@ function OffCanvas() {
         <Offcanvas.Body>
           {projects.map((project) => (
             <div key={project.id} className="project-item">
-              <Button
+              <li
                 variant="light"
                 onClick={() => {
                   handleCloseCanvas();
                   setSelectedProjectInfo(project);
                 }}
+                className="project-name"
               >
                 {project.name}
-              </Button>
+              </li>
             </div>
           ))}
         </Offcanvas.Body>
         <div>
-          <Button variant="primary" onClick={handleShowModal}>
-            Add Project
-          </Button>
-          <Modal show={showModal} onHide={handleCloseModal}>
-            <Modal.Header closeButton>
-              <Modal.Title>Add Project</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <input type="text" placeholder="Project Name" ref={taskValue} />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={handleCloseModal}>
-                Close
-              </Button>
-              <Button variant="primary" onClick={handleCloseSave}>
-                Save
-              </Button>
-            </Modal.Footer>
-          </Modal>
+          <div className="add-project-div">
+            <FontAwesomeIcon
+              icon={faPlus}
+              onClick={() => {
+                handleShowModal();
+                setModalType("project");
+              }}
+              className="add-project"
+            />
+          </div>
+          <CreateTaskModal
+            show={showModal}
+            handleClose={handleCloseModal}
+            taskValue={taskValue}
+            handleCloseSave={handleCloseSave}
+          />
         </div>
       </Offcanvas>
     </>
