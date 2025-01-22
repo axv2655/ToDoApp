@@ -1,9 +1,9 @@
 import { useState, useRef } from "react";
 import Button from "react-bootstrap/Button";
+import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { CreateTaskModal } from "./CreateModal";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import "./OffCanvas.css";
-import Modal from "react-bootstrap/Modal";
 import ProjectData from "../data/projectdata.json";
 import { useBaseContext } from "../context/baseContent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -11,8 +11,6 @@ import { faBars, faPlus, faHouse } from "@fortawesome/free-solid-svg-icons";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 
 function OffCanvas() {
-  const [projects, setProjects] = useState(ProjectData);
-
   const [showCanvas, setShowCanvas] = useState(false);
   const handleCloseCanvas = () => setShowCanvas(false);
   const handleShowCanvas = () => setShowCanvas(true);
@@ -20,7 +18,15 @@ function OffCanvas() {
   const [showModal, setShowModal] = useState(false);
   const handleCloseModal = () => setShowModal(false);
   const handleShowModal = () => setShowModal(true);
-  const { setSelectedProjectInfo, setModalType } = useBaseContext();
+  const {
+    setSelectedProjectInfo,
+    setModalType,
+    setTitle,
+    setSelectedProject,
+    setPage,
+    projects,
+    setProjects,
+  } = useBaseContext();
 
   const handleCloseSave = () => {
     if (!taskValue.current || taskValue.current.value.trim() === "") {
@@ -53,10 +59,48 @@ function OffCanvas() {
           }}
           style={{ color: "black", fontSize: "24px" }}
         />
+        <ButtonGroup aria-label="Basic example">
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setPage("today");
+              setSelectedProjectInfo(null);
+              setTitle("Today's Tasks");
+              setSelectedProject(undefined);
+            }}
+          >
+            Today
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setPage("week");
+              setSelectedProjectInfo(null);
+              setTitle("This Week");
+              setSelectedProject(undefined);
+            }}
+          >
+            This Week
+          </Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setPage("month");
+              setSelectedProjectInfo(null);
+              setTitle("This Month");
+              setSelectedProject(undefined);
+            }}
+          >
+            This Month
+          </Button>
+        </ButtonGroup>
         <FontAwesomeIcon
           icon={faHouse}
           onClick={() => {
             setSelectedProjectInfo(null);
+            setTitle("To Do");
+            setSelectedProject(undefined);
+            setPage("");
           }}
           id="home-icon"
         />
@@ -73,6 +117,9 @@ function OffCanvas() {
                 onClick={() => {
                   handleCloseCanvas();
                   setSelectedProjectInfo(project);
+                  setTitle(project.name);
+                  setSelectedProject(project);
+                  setPage("project");
                 }}
                 className="project-name"
               >

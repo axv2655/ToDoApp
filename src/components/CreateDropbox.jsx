@@ -8,7 +8,7 @@ export function CreateDropbox({
 }) {
   return (
     <Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-basic">
+      <Dropdown.Toggle id="dropdown-basic">
         {selectedProject ? selectedProject.name : "Select Project"}
       </Dropdown.Toggle>
 

@@ -38,6 +38,7 @@ li {
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
 }
 
 .task-details{
@@ -69,3 +70,14 @@ li:hover .task-details{
   background-color: #c0f5ff;
 }
 
+#today {
+  color:green
+}
+
+#overdue {
+  color:red
+}
+
+#upcoming {
+  color:orange
+}

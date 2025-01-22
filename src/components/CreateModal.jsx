@@ -16,18 +16,23 @@ export function CreateTaskModal({
   handleCloseSave,
 }) {
   let modalInfo = {};
-  const { modalType } = useBaseContext();
+  const { modalType, selectedProjectInfo } = useBaseContext();
+  // if (selectedProjectInfo) {
+  //   setSelectedProject(selectedProjectInfo);
+  // }
   if (modalType === "task") {
     modalInfo.heading = "Add Task";
     modalInfo.body = (
       <>
         <input type="text" placeholder="Task Name" ref={taskValue} autoFocus />
         <input type="datetime-local" ref={taskDate} />
-        <CreateDropbox
-          selectedProject={selectedProject}
-          projects={projects}
-          setSelectedProject={setSelectedProject}
-        />
+        {!selectedProjectInfo ? (
+          <CreateDropbox
+            selectedProject={selectedProject}
+            projects={projects}
+            setSelectedProject={setSelectedProject}
+          />
+        ) : null}
       </>
     );
     modalInfo.button = (
@@ -35,7 +40,7 @@ export function CreateTaskModal({
         <Button
           variant="primary"
           onClick={handleCloseSave}
-          disabled={!selectedProject}
+          // disabled={!selectedProject}
         >
           Add Task
         </Button>
